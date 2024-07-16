@@ -48,35 +48,11 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
 }
-.texto {
-    color: white;
+.texto{
     font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-
-    padding: 20px;
-
-    border-radius: 10px;
-    width: fit-content;
-    transition: background-color 0.3s, color 0.3s;
+    color: #fff;
 }
-
-
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #333;
-    color: white;
-}
-.parrafo {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 20px;
-    padding: 10px;
-
-    border-radius: 10px;
-    width: fit-content;
-    transition: background-color 0.3s, color 0.3s;
+.parrafo{
+    font-size: 14px;
+    color: #fff;
 }
