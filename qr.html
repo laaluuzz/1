@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de QR</title>
+    <script src="qrcode.min.js"></script> <!-- Incluye la librería QRCode.js -->
+    <style>
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de QR</h1>
+    <div id="qrcode"></div>
+
+    <script>
+        // URL que deseas convertir en código QR
+        const url = 'https://laaluuzz.github.io/1/';
+
+        // Crea una instancia de QRCode y genera el código QR
+        new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 128,
+            height: 128
+        });
+    </script>
+</body>
+</html>

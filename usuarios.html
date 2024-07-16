@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuarios</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Usuarios</h1>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        // URL de la API
+        const apiUrl = 'https://user-opyf.onrender.com/api/users';
+
+        // Función para obtener y mostrar los datos de los usuarios
+        async function fetchAndDisplayUsers() {
+            try {
+                console.log('Fetching data from API...');
+                // Realizar la solicitud GET a la API
+                const response = await fetch(apiUrl);
+                console.log('Response received:', response);
+
+                // Verificar si la respuesta es exitosa
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Convertir la respuesta a JSON
+                const users = await response.json();
+                console.log('Data parsed:', users);
+
+                // Obtener el tbody de la tabla
+                const tbody = document.querySelector('#userTable tbody');
+
+                // Iterar sobre los usuarios y agregar filas a la tabla
+                users.forEach(user => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${user._id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.age}</td>
+                        <td>${user.email}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                console.log('Users displayed successfully');
+            } catch (error) {
+                console.error('Error al obtener los datos de la API:', error);
+                if (error.message === 'Failed to fetch') {
+                    console.error('Revisa si la URL de la API es correcta y si los permisos de CORS están configurados adecuadamente.');
+                }
+            }
+        }
+
+        // Llamar a la función para obtener y mostrar los datos al cargar la página
+        fetchAndDisplayUsers();
+    </script>
+</body>
+</html>
