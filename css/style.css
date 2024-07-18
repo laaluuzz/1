@@ -3,7 +3,7 @@ body {
     z-index: 0;
     background-color: #fff; /* Fondo para contenido */
 }
-
+/*
 body::before {
     content: "";
     position: fixed;
@@ -11,13 +11,16 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../img/fondo.jpg');
+    background-image: url('../img/amanda/6.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    filter: blur(1px); /* Ajusta el valor para más o menos desenfoque */
-    z-index: -1; /* Asegúrate de que esté detrás del contenido */
-    opacity: 0.8; /* Ajusta la opacidad según sea necesario */
+    filter: blur(1px); 
+    z-index: -1; 
+    opacity: 0.3;  
+}*/
+body{
+    background-color: rgb(249, 232, 250);
 }
 .titulo{
     text-align: center;
@@ -38,6 +41,12 @@ body::before {
     height: auto; /* Mantiene la proporción de las imágenes */
     border-radius: 10px; /* Bordes redondeados opcionales */
 }
+.colcircul img {
+    width: 300px; /* Ajusta el tamaño de las imágenes */
+    height: 300px; /* Asegúrate de que la altura sea la misma que el ancho para mantener la proporción circular */
+    border-radius: 50%; /* Hace que la imagen sea redonda */
+    object-fit: cover; /* Asegura que la imagen cubra completamente el contenedor circular */
+}
 
 .col p {
     margin-top: 10px;
@@ -48,11 +57,41 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
 }
-.texto{
-    font-size: 14px;
-    color: #fff;
-}
 .parrafo{
-    font-size: 24px;
-    color: #fffefe;
+    font-size: 14px;
+    color: #0a0a0a;
+}
+.texto {
+    font-size: 34px;
+    color: #0d0a0a;
+    font-weight: 900; /* Para un grosor más grueso */
+}
+
+@media (max-width: 768px) {
+    .colcircul2 img {
+        width: 90px; /* Ajusta el tamaño de las imágenes */
+        height: 90px; /* Asegúrate de que la altura sea la misma que el ancho para mantener la proporción circular */
+        padding: 1px;
+        margin: 1px;
+        border-radius: 50%; /* Hace que la imagen sea redonda */
+        object-fit: cover; /* Asegura que la imagen cubra completamente el contenedor circular */
+
+    }
+}
+@media (max-width: 768px) {
+    .colcircul2 img {
+        width: 90px; /* Ajusta el tamaño de las imágenes */
+        height: 90px; /* Asegúrate de que la altura sea la misma que el ancho para mantener la proporción circular */
+        padding: 1px;
+        margin: 1px;
+
+    }
+}
+footer{
+    background-color: #ed9df7;
+}
+.textoblanco {
+    font-size: 34px;
+    color: #eae1e1;
+    font-weight: 900; /* Para un grosor más grueso */
 }
