@@ -73,15 +73,13 @@ body {
         height: 90px; /* Asegúrate de que la altura sea la misma que el ancho para mantener la proporción circular */
         padding: 1px;
         margin: 1px;
-        border-radius: 50%; /* Hace que la imagen sea redonda */
-        object-fit: cover; /* Asegura que la imagen cubra completamente el contenedor circular */
-
+        
     }
 }
 @media (max-width: 768px) {
     .colcircul2 img {
-        width: 90px; /* Ajusta el tamaño de las imágenes */
-        height: 90px; /* Asegúrate de que la altura sea la misma que el ancho para mantener la proporción circular */
+        width: 92px; /* Ajusta el tamaño de las imágenes */
+        height: auto; /* Asegúrate de que la altura sea la misma que el ancho para mantener la proporción circular */
         padding: 1px;
         margin: 1px;
 
