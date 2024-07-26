@@ -3,82 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuarios</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
+    <title>CRUD App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Lista de Usuarios</h1>
-    <table id="userTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Edad</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="container mt-5">
+        <h1 class="text-center">User Management</h1>
+        <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#userModal">Add User</button>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Edad</th>
+                        <th>Email</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- User rows will go here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <script>
-        // URL de la API
-        const apiUrl = 'https://user-opyf.onrender.com/api/users';
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm">
+                        <div class="form-group">
+                            <label for="userName">Name</label>
+                            <input type="text" class="form-control" id="userName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userAge">Age</label>
+                            <input type="number" class="form-control" id="userAge" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">Email</label>
+                            <input type="email" class="form-control" id="userEmail" required>
+                        </div>
+                        <input type="hidden" id="userId">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Función para obtener y mostrar los datos de los usuarios
-        async function fetchAndDisplayUsers() {
-            try {
-                console.log('Fetching data from API...');
-                // Realizar la solicitud GET a la API
-                const response = await fetch(apiUrl);
-                console.log('Response received:', response);
-
-                // Verificar si la respuesta es exitosa
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                // Convertir la respuesta a JSON
-                const users = await response.json();
-                console.log('Data parsed:', users);
-
-                // Obtener el tbody de la tabla
-                const tbody = document.querySelector('#userTable tbody');
-
-                // Iterar sobre los usuarios y agregar filas a la tabla
-                users.forEach(user => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${user._id}</td>
-                        <td>${user.name}</td>
-                        <td>${user.age}</td>
-                        <td>${user.email}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                console.log('Users displayed successfully');
-            } catch (error) {
-                console.error('Error al obtener los datos de la API:', error);
-                if (error.message === 'Failed to fetch') {
-                    console.error('Revisa si la URL de la API es correcta y si los permisos de CORS están configurados adecuadamente.');
-                }
-            }
-        }
-
-        // Llamar a la función para obtener y mostrar los datos al cargar la página
-        fetchAndDisplayUsers();
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+    <script src="js/js.js"></script>
 </body>
 </html>
