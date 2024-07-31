@@ -1,10 +1,11 @@
 const apiUrl = 'https://user-opyf.onrender.com/api/users';
+const regionUrl = 'https://user-opyf.onrender.com/api/regions';
+const cityUrl = 'https://user-opyf.onrender.com/api/cities';
 
 $(document).ready(function() {
-    // Fetch and display users
     fetchUsers();
+    fetchRegions();
 
-    // Handle form submission
     $('#userForm').on('submit', function(event) {
         event.preventDefault();
         const userId = $('#userId').val();
@@ -15,7 +16,6 @@ $(document).ready(function() {
         }
     });
 
-    // Fetch users from API
     function fetchUsers() {
         $.ajax({
             url: apiUrl,
@@ -28,12 +28,9 @@ $(document).ready(function() {
                             <td>${user.name}</td>
                             <td>${user.age}</td>
                             <td>${user.email}</td>
-                            <td >
-                                <button class="btn btn-info btn-sm edit-user" data-id="${user._id}">Edit</button>
-                            </td>
-                            <td>
-                            <button class="btn btn-danger btn-sm delete-user" data-id="${user._id}">Delete</button>
-                            </td>
+                            <td>${user.region ? user.region.name : ''}</td>
+                            <td>${user.city ? user.city.name : ''}</td>
+                        
                         </tr>
                     `;
                 });
@@ -46,12 +43,49 @@ $(document).ready(function() {
         });
     }
 
-    // Create a new user
+    function fetchRegions() {
+        $.ajax({
+            url: regionUrl,
+            type: 'GET',
+            success: function(regions) {
+                let regionOptions = '<option value="">Select Region</option>';
+                regions.forEach(region => {
+                    regionOptions += `<option value="${region._id}">${region.name}</option>`;
+                });
+                $('#userRegion').html(regionOptions);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching regions:', status, error);
+                alert('Failed to fetch regions.');
+            }
+        });
+    }
+
+    function fetchCities(regionId) {
+        $.ajax({
+            url: `${cityUrl}?region=${regionId}`,  // Adjust based on your API
+            type: 'GET',
+            success: function(cities) {
+                let cityOptions = '<option value="">Select City</option>';
+                cities.forEach(city => {
+                    cityOptions += `<option value="${city._id}">${city.name}</option>`;
+                });
+                $('#userCity').html(cityOptions);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching cities:', status, error);
+                alert('Failed to fetch cities.');
+            }
+        });
+    }
+
     function createUser() {
         const user = {
             name: $('#userName').val(),
             age: $('#userAge').val(),
-            email: $('#userEmail').val()
+            email: $('#userEmail').val(),
+            region: $('#userRegion').val(),
+            city: $('#userCity').val()
         };
         $.ajax({
             url: apiUrl,
@@ -69,12 +103,13 @@ $(document).ready(function() {
         });
     }
 
-    // Update an existing user
     function updateUser(userId) {
         const user = {
             name: $('#userName').val(),
             age: $('#userAge').val(),
-            email: $('#userEmail').val()
+            email: $('#userEmail').val(),
+            region: $('#userRegion').val(),
+            city: $('#userCity').val()
         };
         $.ajax({
             url: `${apiUrl}/${userId}`,
@@ -92,7 +127,15 @@ $(document).ready(function() {
         });
     }
 
-    // Edit user
+    $(document).on('change', '#userRegion', function() {
+        const regionId = $(this).val();
+        if (regionId) {
+            fetchCities(regionId);
+        } else {
+            $('#userCity').html('<option value="">Select City</option>');
+        }
+    });
+
     $(document).on('click', '.edit-user', function() {
         const userId = $(this).data('id');
         $.ajax({
@@ -103,6 +146,9 @@ $(document).ready(function() {
                 $('#userName').val(user.name);
                 $('#userAge').val(user.age);
                 $('#userEmail').val(user.email);
+                $('#userRegion').val(user.region ? user.region._id : '');
+                fetchCities(user.region ? user.region._id : '');
+                $('#userCity').val(user.city ? user.city._id : '');
                 $('#userModalLabel').text('Edit User');
                 $('#userModal').modal('show');
             },
@@ -113,7 +159,6 @@ $(document).ready(function() {
         });
     });
 
-    // Delete user
     $(document).on('click', '.delete-user', function() {
         const userId = $(this).data('id');
         if (confirm('Are you sure you want to delete this user?')) {
@@ -131,10 +176,11 @@ $(document).ready(function() {
         }
     });
 
-    // Reset form when modal is hidden
     $('#userModal').on('hidden.bs.modal', function () {
         $('#userForm')[0].reset();
         $('#userId').val('');
         $('#userModalLabel').text('Add User');
+        $('#userRegion').html('<option value="">Select Region</option>');
+        $('#userCity').html('<option value="">Select City</option>');
     });
 });
