@@ -89,6 +89,8 @@ $(document).ready(function() {
             name: $('#userName').val(),
             age: $('#userAge').val(),
             email: $('#userEmail').val(),
+            telefono: $('#usertelefono').val(),
+            cesfam: $('#userCesfam').val(),
             region: $('#userRegion').val(),
             city: $('#userCity').val()
         };
@@ -113,6 +115,8 @@ $(document).ready(function() {
             name: $('#userName').val(),
             age: $('#userAge').val(),
             email: $('#userEmail').val(),
+            cesfam: $('#userCesfam').val(),
+            telefono: $('#usertelefono').val(),
             region: $('#userRegion').val(),
             city: $('#userCity').val()
         };
@@ -151,6 +155,8 @@ $(document).ready(function() {
                 $('#userName').val(user.name);
                 $('#userAge').val(user.age);
                 $('#userEmail').val(user.email);
+                $('#userCesfam').val(user.cesfam);
+                $('#usertelefono').val(user.telefono);
                 $('#userRegion').val(user.region ? user.region._id : '');
                 fetchCities(user.region ? user.region._id : '');
                 $('#userCity').val(user.city ? user.city._id : '');

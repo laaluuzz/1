@@ -1,19 +1,17 @@
 const apiUrl = 'https://user-opyf.onrender.com/api/users';
-const regionUrl = 'https://user-opyf.onrender.com/api/regions';
-const cityUrl = 'https://user-opyf.onrender.com/api/cities';
 
 $(document).ready(function() {
     fetchUsers();
-    fetchRegions();
 
-    $('#userForm').on('submit', function(event) {
+    $('#userTableBody').on('click', 'tr', function() {
+        const userId = $(this).data('id');
+        fetchUserDetails(userId);
+    });
+
+    $('#consultationForm').on('submit', function(event) {
         event.preventDefault();
-        const userId = $('#userId').val();
-        if (userId) {
-            updateUser(userId);
-        } else {
-            createUser();
-        }
+        const userId = $('#modalUserId').val();
+        addConsultation(userId);
     });
 
     function fetchUsers() {
@@ -23,13 +21,12 @@ $(document).ready(function() {
             success: function(users) {
                 let userTableBody = '';
                 users.forEach(user => {
+                    const edad = user.age ? calcularEdad(user.age) : 'N/A';
                     userTableBody += `
-                        <tr>
+                        <tr data-id="${user._id}">
                             <td>${user.name}</td>
-                            <td>${user.age}</td>
-                    
+                            <td>${edad}</td>
                             <td>${user.city ? user.city.name : ''}</td>
-                        
                         </tr>
                     `;
                 });
@@ -37,149 +34,89 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching users:', status, error);
-                alert('Failed to fetch users.');
+                alert('Failed to fetch users. Please check the console for more details.');
             }
         });
     }
 
-    function fetchRegions() {
-        $.ajax({
-            url: regionUrl,
-            type: 'GET',
-            success: function(regions) {
-                let regionOptions = '<option value="">Select Region</option>';
-                regions.forEach(region => {
-                    regionOptions += `<option value="${region._id}">${region.name}</option>`;
-                });
-                $('#userRegion').html(regionOptions);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching regions:', status, error);
-                alert('Failed to fetch regions.');
-            }
-        });
-    }
-
-    function fetchCities(regionId) {
-        $.ajax({
-            url: `${cityUrl}?region=${regionId}`,  // Adjust based on your API
-            type: 'GET',
-            success: function(cities) {
-                let cityOptions = '<option value="">Select City</option>';
-                cities.forEach(city => {
-                    cityOptions += `<option value="${city._id}">${city.name}</option>`;
-                });
-                $('#userCity').html(cityOptions);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching cities:', status, error);
-                alert('Failed to fetch cities.');
-            }
-        });
-    }
-
-    function createUser() {
-        const user = {
-            name: $('#userName').val(),
-            age: $('#userAge').val(),
-            email: $('#userEmail').val(),
-            region: $('#userRegion').val(),
-            city: $('#userCity').val()
-        };
-        $.ajax({
-            url: apiUrl,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(user),
-            success: function() {
-                $('#userModal').modal('hide');
-                fetchUsers();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error creating user:', status, error);
-                alert('Failed to create user.');
-            }
-        });
-    }
-
-    function updateUser(userId) {
-        const user = {
-            name: $('#userName').val(),
-            age: $('#userAge').val(),
-            email: $('#userEmail').val(),
-            region: $('#userRegion').val(),
-            city: $('#userCity').val()
-        };
-        $.ajax({
-            url: `${apiUrl}/${userId}`,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(user),
-            success: function() {
-                $('#userModal').modal('hide');
-                fetchUsers();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error updating user:', status, error);
-                alert('Failed to update user.');
-            }
-        });
-    }
-
-    $(document).on('change', '#userRegion', function() {
-        const regionId = $(this).val();
-        if (regionId) {
-            fetchCities(regionId);
-        } else {
-            $('#userCity').html('<option value="">Select City</option>');
-        }
-    });
-
-    $(document).on('click', '.edit-user', function() {
-        const userId = $(this).data('id');
+    function fetchUserDetails(userId) {
         $.ajax({
             url: `${apiUrl}/${userId}`,
             type: 'GET',
             success: function(user) {
-                $('#userId').val(user._id);
-                $('#userName').val(user.name);
-                $('#userAge').val(user.age);
-                $('#userEmail').val(user.email);
-                $('#userRegion').val(user.region ? user.region._id : '');
-                fetchCities(user.region ? user.region._id : '');
-                $('#userCity').val(user.city ? user.city._id : '');
-                $('#userModalLabel').text('Edit User');
+                $('#modalUserId').val(user._id);
+                $('#userDetails').html(`
+                    <p><strong>Name:</strong> ${user.name}</p>
+                    <p><strong>Age:</strong> ${user.age ? calcularEdad(user.age) : 'N/A'}</p>
+                    <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${user.telefono || 'N/A'}</p>
+                    <p><strong>Region:</strong> ${user.region ? user.region.name : 'N/A'}</p>
+                    <p><strong>City:</strong> ${user.city ? user.city.name : 'N/A'}</p>
+                `);
+
+                // List consultations
+                let consultationList = '';
+                user.consultations.forEach(consultation => {
+                    consultationList += `
+                        <li>
+                            <strong>Date:</strong> ${new Date(consultation.date).toLocaleDateString()} <br>
+                            <strong>Reason:</strong> ${consultation.reason} <br>
+                            <strong>Details:</strong> ${consultation.details}
+                        </li>
+                    `;
+                });
+                $('#consultationList').html(consultationList);
+
                 $('#userModal').modal('show');
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching user details:', status, error);
-                alert('Failed to fetch user details.');
+                alert('Failed to fetch user details. Please check the console for more details.');
             }
         });
-    });
+    }
 
-    $(document).on('click', '.delete-user', function() {
-        const userId = $(this).data('id');
-        if (confirm('Are you sure you want to delete this user?')) {
-            $.ajax({
-                url: `${apiUrl}/${userId}`,
-                type: 'DELETE',
-                success: function() {
-                    fetchUsers();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error deleting user:', status, error);
-                    alert('Failed to delete user.');
-                }
-            });
+    function addConsultation(userId) {
+        const consultationData = {
+            date: $('#consultationDate').val(),
+            reason: $('#consultationReason').val(),
+            details: $('#consultationDetails').val()
+        };
+
+        $.ajax({
+            url: `${apiUrl}/${userId}/consultations`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(consultationData),
+            success: function(response) {
+                $('#userModal').modal('hide');
+                fetchUserDetails(userId); // Refresh user details to include the new consultation
+                alert('Consultation added successfully.');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding consultation:', status, error);
+                alert('Failed to add consultation. Please check the console for more details.');
+            }
+        });
+    }
+
+    function calcularEdad(fechaNacimiento) {
+        const partes = fechaNacimiento.split('-');
+        const dia = parseInt(partes[0], 10);
+        const mes = parseInt(partes[1], 10) - 1;
+        const año = parseInt(partes[2], 10);
+
+        const fechaNac = new Date(año, mes, dia);
+        const hoy = new Date();
+
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const mesActual = hoy.getMonth();
+        const diaActual = hoy.getDate();
+
+        if (mesActual < mes || (mesActual === mes && diaActual < dia)) {
+            edad--;
         }
-    });
 
-    $('#userModal').on('hidden.bs.modal', function () {
-        $('#userForm')[0].reset();
-        $('#userId').val('');
-        $('#userModalLabel').text('Add User');
-        $('#userRegion').html('<option value="">Select Region</option>');
-        $('#userCity').html('<option value="">Select City</option>');
-    });
+        return edad;
+    }
 });
