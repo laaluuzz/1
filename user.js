@@ -27,8 +27,7 @@ $(document).ready(function() {
                         <tr>
                             <td>${user.name}</td>
                             <td>${user.age}</td>
-                            <td>${user.email}</td>
-                            <td>${user.region ? user.region.name : ''}</td>
+                    
                             <td>${user.city ? user.city.name : ''}</td>
                         
                         </tr>
